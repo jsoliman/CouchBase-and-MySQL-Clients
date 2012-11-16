@@ -44,14 +44,20 @@
 
     <target name="run-debug" depends="build-testHarness">
         <java classname="com.cpe560.run.TestRunner">
+            <arg value="${type}" />
+            <arg value="${config}"/>
             <classpath path="${classes.dir}" />
             <classpath refid="couchbase-classpath" />
+            <classpath refid="common-classpath"/>
         </java>
     </target>
     <target name="run" depends="build-testHarness">
         <java classname="com.cpe560.run.TestRunner">
+            <arg value="${type}" />
+            <arg value="${config}"/>
             <classpath path="${classes.dir}" />
             <classpath refid="couchbase-classpath" />
+            <classpath refid="common-classpath"/>
         </java>
     </target>
 </project>

@@ -1,7 +1,7 @@
 {
     "iterations": 5,
     "messagesPerSecond": 10,
-    "tableName": "trending_over_time",
+    "viewName": "trending_over_time",
     "outputFilename": "test1.log",
     "documentName": "deploy",
     "setGroup": true,

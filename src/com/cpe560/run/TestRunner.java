@@ -10,10 +10,10 @@ public class TestRunner {
         }
 
         if (args[0].equals("MySQL")) {
-            CouchBaseTestHarness cbth = CouchBaseTestHarness.createCouchBaseTestHarness(args[0]);
-            cbth.run();
-        } else if (args[0].equals("CouchBase")) {
             System.out.println("Need to write MySQL stuff");
+        } else if (args[0].equals("CouchBase")) {
+            CouchBaseTestHarness cbth = CouchBaseTestHarness.createCouchBaseTestHarness(args[1]);
+            cbth.run();
         } else {
             printUsage();
         }
