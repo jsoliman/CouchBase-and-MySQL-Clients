@@ -1,5 +1,7 @@
 package com.cpe560.common;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class Configuration {
     public Configuration() {};
     private int iterations;
@@ -16,4 +18,13 @@ public class Configuration {
     public void setReadsPerSecond(int readsPerSecond) { this.readsPerSecond = readsPerSecond; }
     public void setWritesPerSecond(int writesPerSecond) { this.writesPerSecond = writesPerSecond; }
     public void setOutputFilename(String filename) { this.outputFilename = filename; }
+    
+    public ConcurrentHashMap<String, Object> generateConcurrentHashMap() {
+        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<String, Object>();
+        map.put("iterations", iterations);
+        map.put("readsPerSecond", readsPerSecond);
+        map.put("writesPerSecond", writesPerSecond);
+        map.put("outputFilename", outputFilename);
+        return map;
+    }
 }

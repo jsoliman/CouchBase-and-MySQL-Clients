@@ -1,6 +1,7 @@
 package com.cpe560.couchbase;
 
 import com.cpe560.common.Configuration;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.net.URI;
     // Arguments
@@ -32,4 +33,16 @@ public class CouchBaseConfiguration extends Configuration {
     public void setSetReduce(boolean setReduce) { this.setReduce = setReduce; }
     public void setDocumentName(String documentName) { this.documentName = documentName; }
     public void setUris(List<URI> uris) { this.uris = uris; }
+
+    public ConcurrentHashMap<String, Object> generateConcurrentHashMap() {
+
+        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<String, Object>(super.generateConcurrentHashMap());
+        map.put("viewName", viewName);
+        map.put("setGroup", setGroup);
+        map.put("groupLevel", groupLevel);
+        map.put("setReduce", setReduce);
+        map.put("documentName", documentName);
+        map.put("uris", uris);
+        return map;
+    }
 }

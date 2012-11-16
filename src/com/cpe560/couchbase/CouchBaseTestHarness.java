@@ -68,24 +68,26 @@ public class CouchBaseTestHarness {
     }
 
     private Map<Integer, Long> dispatchEvents(CountDownLatch countDownLatch) {
-        Map<Integer, Long> callTimes = new ConcurrentHashMap<Integer, Long>();
+        ConcurrentHashMap<Integer, Long> callTimes = new ConcurrentHashMap<Integer, Long>();
         int readsPerSecond = config.getReadsPerSecond();
         int writesPerSecond = config.getWritesPerSecond();
         int iterations = config.getIterations();
         int messagesPerSecond = readsPerSecond + writesPerSecond;
+        ConcurrentHashMap<String, Object> config_map = config.generateConcurrentHashMap();
 
         try {
             for (int rt = 0; rt < iterations; rt++) {
                 long start = System.currentTimeMillis();
                 for (int i = 0; i < readsPerSecond; i++) {
-                    new ReadRequestThread(countDownLatch, config, callTimes, (rt * messagesPerSecond) + i);
+                    //new ReadRequestThread(countDownLatch, config, callTimes, (rt * messagesPerSecond) + i);
+                    new ReadRequestThread(countDownLatch, config_map, callTimes, (rt * messagesPerSecond) + i);
                 }
                 for (int i = readsPerSecond; i < messagesPerSecond; i++) {
                     System.out.println("Implement write request thread");
                 }
                 long finish = System.currentTimeMillis();
                 long difference = finish - start;
-                System.out.println(difference + " ms to dispatch");
+                outputContent += "Time to dispatch " + rt + ": " + difference + "ms\n";
                 if (difference > 1000) {                    
                     System.out.println("More than 1 second to dispatch request threads");
                 } else {
