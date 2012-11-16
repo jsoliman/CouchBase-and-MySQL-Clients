@@ -1,6 +1,6 @@
-package couchbase;
+package com.cpe560.couchbase;
 
-import common.*;
+import com.cpe560.common.Configuration;
 import java.util.List;
 import java.net.URI;
     // Arguments
@@ -10,7 +10,7 @@ import java.net.URI;
     //  -g <value>: setGroup(true), setGroupLevel(<value>)
     //  -r: setReduce
     //  -i: iterations
-class CouchBaseConfiguration extends Configuration {
+public class CouchBaseConfiguration extends Configuration {
 	// Table name == view name;
 	private boolean setGroup;
 	private int groupLevel;

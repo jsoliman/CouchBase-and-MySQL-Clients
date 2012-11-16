@@ -1,4 +1,4 @@
-package couchbase;
+package com.cpe560.couchbase;
 
 import java.lang.*;
 import java.util.*;
@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-class RequestThread implements Runnable {
+public class RequestThread implements Runnable {
 	private Thread t;
 	private Query query;
 	private CouchbaseClient client;

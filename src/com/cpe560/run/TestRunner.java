@@ -1,6 +1,8 @@
-import couchbase;
+package com.cpe560.run;
 
-class TestRunner {
+import com.cpe560.couchbase.CouchBaseTestHarness;
+
+public class TestRunner {
 	public static void main(String[] args) {
 		if (args.length != 2) {
         	printUsage();

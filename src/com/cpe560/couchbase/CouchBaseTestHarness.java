@@ -1,4 +1,4 @@
-package couchbase;
+package com.cpe560.couchbase;
 
 import java.net.URI;
 import java.util.LinkedList;
@@ -17,11 +17,11 @@ import net.spy.memcached.internal.OperationFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import com.google.gson.Gson;
-
+import com.cpe560.common.Configuration;
 import java.io.*;
 import java.util.*;
 
-class CouchBaseTestHarness {
+public class CouchBaseTestHarness {
     private int messagesPerSecond;
     private int iterations;
     private String documentName;
@@ -33,7 +33,7 @@ class CouchBaseTestHarness {
     private String outputFilename;
     private String outputContent;
 
-    private static CouchBaseTestHarness createCouchBaseTestHarness(String filename) {
+    public static CouchBaseTestHarness createCouchBaseTestHarness(String filename) {
         CouchBaseTestHarness cbth = new CouchBaseTestHarness();
         cbth.init(filename);
         return cbth;
@@ -62,7 +62,7 @@ class CouchBaseTestHarness {
 
     }
 
-    private void run() {        
+    public void run() {        
         int totalCount = 0;
         CouchbaseClient client = null;
 

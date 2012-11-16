@@ -1,6 +1,7 @@
-package common;
+package com.cpe560.common;
 
-class Configuration {
+public class Configuration {
+	public Configuration() {};
 	private String tableName;
 	private int iterations;
 	private int messagesPerSecond;
