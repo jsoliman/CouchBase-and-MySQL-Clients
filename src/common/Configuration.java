@@ -1,4 +1,4 @@
-package couchbase;
+package common;
 
 class Configuration {
 	private String tableName;

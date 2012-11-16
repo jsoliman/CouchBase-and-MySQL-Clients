@@ -1,5 +1,6 @@
 package couchbase;
 
+import common.*;
 import java.util.List;
 import java.net.URI;
     // Arguments
