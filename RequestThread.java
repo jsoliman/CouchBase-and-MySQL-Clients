@@ -40,8 +40,6 @@ class RequestThread implements Runnable {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        System.out.println(endTime - startTime);
-
         map.put(id, endTime - startTime);
         countDownLatch.countDown();
 	}

@@ -16,28 +16,54 @@ import net.spy.memcached.internal.OperationFuture;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import com.google.gson.Gson;
 
 import java.io.*;
 import java.util.*;
 
 class CouchBaseTestHarness {
-    // Arguments
-    // Bucket name
-    // View name
-    //  View args
-    //  -g <value>: setGroup(true), setGroupLevel(<value>)
-    //  -r: setReduce
-    //  -i: iterations
-    public static void main(String[] args) {
-        List<URI> uris = new ArrayList<URI>();
-        Map<Integer, Long> callTimes = new ConcurrentHashMap<Integer, Long>();
-        int totalCount = 0;
-        // Add server 
-        uris.add(URI.create("http://10.160.139.71:8091/pools"));
-        uris.add(URI.create("http://10.160.29.63:8091/pools"));
-        uris.add(URI.create("http://10.160.45.147:8091/pools"));
-        uris.add(URI.create("http://10.168.183.229:8091/pools"));
+    private int messagesPerSecond;
+    private int iterations;
+    private String documentName;
+    private String viewName;
+    private int groupLevel;
+    private boolean group;
+    private boolean reduce;
+    private List<URI> uris;
+    private String outputFilename;
+    private String outputContent;
 
+    private static CouchBaseTestHarness createCouchBaseTestHarness(String filename) {
+        CouchBaseTestHarness cbth = new CouchBaseTestHarness();
+        cbth.init(filename);
+        return cbth;
+    }
+
+    private void init(String filename) {
+        try {
+            FileReader f = new FileReader(filename);
+            Gson gson = new Gson();
+            CouchBaseConfiguration data = gson.fromJson(f, CouchBaseConfiguration.class);
+            messagesPerSecond = data.getMessagesPerSecond();
+            iterations = data.getIterations();
+            viewName = data.getTableName();
+            documentName = data.getDocumentName();
+            group = data.getSetGroup();
+            reduce = data.getSetReduce();
+            uris = data.getUris();
+            outputFilename = data.getOutputFilename();
+            outputContent = "";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        outputContent += "Messages Per Second: " + messagesPerSecond + "\n";
+        outputContent += "Number of Iterations: " + iterations + "\n";
+
+    }
+
+    private void run() {        
+        int totalCount = 0;
         CouchbaseClient client = null;
 
         // Establish connection with CouchBase Server
@@ -50,22 +76,35 @@ class CouchBaseTestHarness {
             System.exit(0);
         }
 
-        int runTimes = 5;
-        int numIterations = 5;
+        CountDownLatch countDownLatch = new CountDownLatch (iterations * messagesPerSecond);
 
-        CountDownLatch countDownLatch = new CountDownLatch (runTimes * numIterations);
+        Map<Integer, Long> callTimes = dispatchEvents(countDownLatch, client);
+
+        // Wait for all request threads to finish.
+        try {
+            countDownLatch.await();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        printResults(callTimes);
+        client.shutdown(3, TimeUnit.SECONDS);
+    }
+
+    private Map<Integer, Long> dispatchEvents(CountDownLatch countDownLatch, CouchbaseClient client) {
+        Map<Integer, Long> callTimes = new ConcurrentHashMap<Integer, Long>();
 
         try {
-            View view = client.getView("deploy", "trending_over_time");
+            View view = client.getView(documentName, viewName);
             Query query = new Query();
-            query.setGroup(true);
-            query.setGroupLevel(2);
-            query.setReduce(true);            
+            query.setGroup(group);
+            query.setGroupLevel(groupLevel);
+            query.setReduce(reduce);            
 
-            for (int rt = 0; rt < runTimes; rt++) {
+            for (int rt = 0; rt < iterations; rt++) {
                 long start = System.currentTimeMillis();
-                for (int i = 0; i < numIterations; i++) {
-                    RequestThread requestThread = new RequestThread(countDownLatch, query, client, view, callTimes, (rt * i) + i);
+                for (int i = 0; i < messagesPerSecond; i++) {
+                    RequestThread requestThread = new RequestThread(countDownLatch, query, client, view, callTimes, (rt * messagesPerSecond) + i);
                 }
                 long finish = System.currentTimeMillis();
                 long difference = finish - start;
@@ -78,16 +117,36 @@ class CouchBaseTestHarness {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        try {
-            countDownLatch.await();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        for (Integer i : callTimes.keySet()) {
-            System.out.println(callTimes.get(i));
-        }
-        client.shutdown(3, TimeUnit.SECONDS);
-        System.exit(0);
+        return callTimes;
     }
+
+    private void printResults(Map<Integer, Long> timePerCall) {
+        int time = 0;
+
+        for (Integer i : timePerCall.keySet()) {
+            time += timePerCall.get(i);
+            outputContent += timePerCall.get(i) + "\n";
+        }
+
+        outputContent += "Total Time: " + time;
+        try{
+            FileWriter fstream = new FileWriter(outputFilename);
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write(outputContent);
+            out.close();
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
+
+    // public static void main(String[] args) {
+
+    //     if (args.length != 1) {
+    //         System.out.println("Usage");
+    //         System.exit(2);
+    //     }
+    //     CouchBaseTestHarness cbth = CouchBaseTestHarness.createCouchBaseTestHarness(args[0]);
+    //     cbth.run();
+    //     System.exit(0);
+    // }
 }
