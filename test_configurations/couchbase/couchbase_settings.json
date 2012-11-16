@@ -1,16 +1,16 @@
 {
-	"iterations": 5,
-	"messagesPerSecond": 10,
-	"tableName": "trending_over_time",
-	"outputFilename": "test1.log",
-	"documentName": "deploy",
-	"setGroup": true,
-	"setReduce": true,
-	"uris": [
-		"http://10.160.139.71:8091/pools",
-		"http://10.160.29.63:8091/pools",
-		"http://10.160.45.147:8091/pools",
-		"http://10.168.183.229:8091/pools"
-	]
+    "iterations": 5,
+    "messagesPerSecond": 10,
+    "tableName": "trending_over_time",
+    "outputFilename": "test1.log",
+    "documentName": "deploy",
+    "setGroup": true,
+    "setReduce": true,
+    "uris": [
+        "http://10.160.139.71:8091/pools",
+        "http://10.160.29.63:8091/pools",
+        "http://10.160.45.147:8091/pools",
+        "http://10.168.183.229:8091/pools"
+    ]
 
 }
