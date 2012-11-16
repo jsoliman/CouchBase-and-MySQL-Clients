@@ -1,6 +1,7 @@
 {
     "iterations": 5,
-    "messagesPerSecond": 10,
+    "readsPerSecond": 10,
+    "writesPerSecond": 0,
     "viewName": "trending_over_time",
     "outputFilename": "test1.log",
     "documentName": "deploy",

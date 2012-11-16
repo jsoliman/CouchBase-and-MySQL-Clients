@@ -4,6 +4,7 @@
     <property name="build.dir"   value="build"/>
     <property name="lib.dir"     value="lib"/>
     <property name="classes.dir"     value="${build.dir}/classes"/>
+    <property name="config.dir" value="config" />
 
     <path id="common-classpath">
         <fileset dir="${lib.dir}/common">

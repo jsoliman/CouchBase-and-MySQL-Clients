@@ -22,17 +22,8 @@ import java.io.*;
 import java.util.*;
 
 public class CouchBaseTestHarness {
-    private int messagesPerSecond;
-    private int iterations;
-    private String documentName;
-    private String viewName;
-    private int groupLevel;
-    private boolean group;
-    private boolean reduce;
-    private List<URI> uris;
-    private String outputFilename;
     private String outputContent;
-
+    private CouchBaseConfiguration config;
     private CouchBaseTestHarness() {}
 
     public static CouchBaseTestHarness createCouchBaseTestHarness(String filename) {
@@ -45,42 +36,26 @@ public class CouchBaseTestHarness {
         try {
             FileReader f = new FileReader(filename);
             Gson gson = new Gson();
-            CouchBaseConfiguration data = gson.fromJson(f, CouchBaseConfiguration.class);
-            messagesPerSecond = data.getMessagesPerSecond();
-            iterations = data.getIterations();
-            viewName = data.getViewName();
-            documentName = data.getDocumentName();
-            group = data.getSetGroup();
-            reduce = data.getSetReduce();
-            uris = data.getUris();
-            outputFilename = data.getOutputFilename();
+            config = gson.fromJson(f, CouchBaseConfiguration.class);
             outputContent = "";
+
         } catch (Exception ex) {
             ex.printStackTrace();
             System.exit(1);
         }
+        int messagesPerSecond = config.getReadsPerSecond() + config.getWritesPerSecond();
+
         outputContent += "Messages Per Second: " + messagesPerSecond + "\n";
-        outputContent += "Number of Iterations: " + iterations + "\n";
+        outputContent += "Number of Iterations: " + config.getIterations() + "\n";
 
     }
 
     public void run() {        
-        int totalCount = 0;
-        CouchbaseClient client = null;
-
-        // Establish connection with CouchBase Server
-        try {
-            CouchbaseConnectionFactory cf = new CouchbaseConnectionFactory(uris, "default", "");
-            client = new CouchbaseClient((CouchbaseConnectionFactory) cf);
-        } catch (Exception e) {
-            System.err.println("Error connecting to Couchbase: "
-                + e.getMessage());
-            System.exit(0);
-        }
-
+        int iterations = config.getIterations();
+        int messagesPerSecond = config.getReadsPerSecond() + config.getWritesPerSecond();
         CountDownLatch countDownLatch = new CountDownLatch (iterations * messagesPerSecond);
 
-        Map<Integer, Long> callTimes = dispatchEvents(countDownLatch, client);
+        Map<Integer, Long> callTimes = dispatchEvents(countDownLatch);
 
         // Wait for all request threads to finish.
         try {
@@ -90,30 +65,31 @@ public class CouchBaseTestHarness {
         }
         
         printResults(callTimes);
-        client.shutdown(3, TimeUnit.SECONDS);
     }
 
-    private Map<Integer, Long> dispatchEvents(CountDownLatch countDownLatch, CouchbaseClient client) {
+    private Map<Integer, Long> dispatchEvents(CountDownLatch countDownLatch) {
         Map<Integer, Long> callTimes = new ConcurrentHashMap<Integer, Long>();
+        int readsPerSecond = config.getReadsPerSecond();
+        int writesPerSecond = config.getWritesPerSecond();
+        int iterations = config.getIterations();
+        int messagesPerSecond = readsPerSecond + writesPerSecond;
 
         try {
-            View view = client.getView(documentName, viewName);
-            Query query = new Query();
-            query.setGroup(group);
-            query.setGroupLevel(groupLevel);
-            query.setReduce(reduce);            
-
             for (int rt = 0; rt < iterations; rt++) {
                 long start = System.currentTimeMillis();
-                for (int i = 0; i < messagesPerSecond; i++) {
-                    ReadRequestThread readRequestThread = new ReadRequestThread(countDownLatch, query, client, view, callTimes, (rt * messagesPerSecond) + i);
+                for (int i = 0; i < readsPerSecond; i++) {
+                    new ReadRequestThread(countDownLatch, config, callTimes, (rt * messagesPerSecond) + i);
+                }
+                for (int i = readsPerSecond; i < messagesPerSecond; i++) {
+                    System.out.println("Implement write request thread");
                 }
                 long finish = System.currentTimeMillis();
                 long difference = finish - start;
-                if (difference > 1000) {
+                System.out.println(difference + " ms to dispatch");
+                if (difference > 1000) {                    
                     System.out.println("More than 1 second to dispatch request threads");
                 } else {
-                    Thread.sleep(1000 - (finish - start));
+                    Thread.sleep(1000 - difference);
                 }
             }
         } catch (Exception ex) {
@@ -132,7 +108,7 @@ public class CouchBaseTestHarness {
 
         outputContent += "Total Time: " + time;
         try{
-            FileWriter fstream = new FileWriter(outputFilename);
+            FileWriter fstream = new FileWriter(config.getOutputFilename());
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(outputContent);
             out.close();
