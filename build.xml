@@ -6,17 +6,16 @@
     <property name="classes.dir"     value="${build.dir}/classes"/>
 
     <path id="common-classpath">
-      <fileset dir="${lib.dir}/common">
-        <include name="*.jar"/>
-      </fileset>
-      <pathelement path="."/>
+        <fileset dir="${lib.dir}/common">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement path="."/>
     </path>
 
     <path id="couchbase-classpath">
-      <fileset dir="${lib.dir}/couchbase">
-        <include name="*.jar"/>
-
-      </fileset>
+        <fileset dir="${lib.dir}/couchbase">
+            <include name="*.jar"/>
+        </fileset>
       <pathelement path="${build.dir}"/>
     </path>
 
@@ -43,6 +42,12 @@
 
     <target name="build" depends="build-testHarness" />
 
+    <target name="run-debug" depends="build-testHarness">
+        <java classname="com.cpe560.run.TestRunner">
+            <classpath path="${classes.dir}" />
+            <classpath refid="couchbase-classpath" />
+        </java>
+    </target>
     <target name="run" depends="build-testHarness">
         <java classname="com.cpe560.run.TestRunner">
             <classpath path="${classes.dir}" />
