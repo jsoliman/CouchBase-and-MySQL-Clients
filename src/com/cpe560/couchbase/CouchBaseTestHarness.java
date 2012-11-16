@@ -46,7 +46,7 @@ public class CouchBaseTestHarness {
             CouchBaseConfiguration data = gson.fromJson(f, CouchBaseConfiguration.class);
             messagesPerSecond = data.getMessagesPerSecond();
             iterations = data.getIterations();
-            viewName = data.getTableName();
+            viewName = data.getViewName();
             documentName = data.getDocumentName();
             group = data.getSetGroup();
             reduce = data.getSetReduce();
