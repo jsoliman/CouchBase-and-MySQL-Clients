@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class RequestThread implements Runnable {
+public class ReadRequestThread implements Runnable {
     private Thread t;
     private Query query;
     private CouchbaseClient client;
@@ -19,9 +19,9 @@ public class RequestThread implements Runnable {
     private Map<Integer, Long> map;
     private final CountDownLatch countDownLatch;
 
-    public RequestThread(CountDownLatch countDownLatch, Query query, CouchbaseClient client, View view, Map<Integer, Long> map, int id) {
+    public ReadRequestThread(CountDownLatch countDownLatch, Query query, CouchbaseClient client, View view, Map<Integer, Long> map, int id) {
         this.countDownLatch = countDownLatch;
-        t = new Thread(this, "RequestThread");
+        t = new Thread(this, "ReadRequestThread");
         this.query = query;
         this.view = view;
         this.client = client;

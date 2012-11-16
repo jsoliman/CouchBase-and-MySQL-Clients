@@ -33,6 +33,8 @@ public class CouchBaseTestHarness {
     private String outputFilename;
     private String outputContent;
 
+    private CouchBaseTestHarness() {}
+
     public static CouchBaseTestHarness createCouchBaseTestHarness(String filename) {
         CouchBaseTestHarness cbth = new CouchBaseTestHarness();
         cbth.init(filename);
@@ -104,7 +106,7 @@ public class CouchBaseTestHarness {
             for (int rt = 0; rt < iterations; rt++) {
                 long start = System.currentTimeMillis();
                 for (int i = 0; i < messagesPerSecond; i++) {
-                    RequestThread requestThread = new RequestThread(countDownLatch, query, client, view, callTimes, (rt * messagesPerSecond) + i);
+                    ReadRequestThread readRequestThread = new ReadRequestThread(countDownLatch, query, client, view, callTimes, (rt * messagesPerSecond) + i);
                 }
                 long finish = System.currentTimeMillis();
                 long difference = finish - start;
@@ -138,15 +140,4 @@ public class CouchBaseTestHarness {
             System.err.println("Error: " + e.getMessage());
         }
     }
-
-    // public static void main(String[] args) {
-
-    //     if (args.length != 1) {
-    //         System.out.println("Usage");
-    //         System.exit(2);
-    //     }
-    //     CouchBaseTestHarness cbth = CouchBaseTestHarness.createCouchBaseTestHarness(args[0]);
-    //     cbth.run();
-    //     System.exit(0);
-    // }
 }
