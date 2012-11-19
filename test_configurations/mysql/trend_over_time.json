@@ -11,5 +11,5 @@
     "databaseName": "Mathzor",
     "serverName": "ip-10-160-139-71.us-west-1.compute.internal",
     "port": "3306",
-    "readQuery": "Select * from quizzes GROUP BY qStudent, stamp;",
+    "readQuery": "Select * from quizzes GROUP BY qStudent, stamp;"
 }
