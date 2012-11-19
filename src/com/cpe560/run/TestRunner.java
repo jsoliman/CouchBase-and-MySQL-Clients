@@ -1,6 +1,7 @@
 package com.cpe560.run;
 
 import com.cpe560.couchbase.CouchBaseTestHarness;
+import com.cpe560.mysql.MySQLTestHarness;
 
 public class TestRunner {
     public static void main(String[] args) {
@@ -10,7 +11,8 @@ public class TestRunner {
         }
 
         if (args[0].equals("MySQL")) {
-            System.out.println("Need to write MySQL stuff");
+            MySQLTestHarness msth = MySQLTestHarness.createMySQLTestHarness(args[1]);
+            msth.run();
         } else if (args[0].equals("CouchBase")) {
             CouchBaseTestHarness cbth = CouchBaseTestHarness.createCouchBaseTestHarness(args[1]);
             cbth.run();

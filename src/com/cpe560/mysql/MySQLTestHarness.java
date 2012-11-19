@@ -4,7 +4,10 @@ import com.cpe560.mysql.MySQLConfiguration;
 
 import com.google.gson.Gson;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.io.*;
+import java.util.*;
 
 public class MySQLTestHarness {
 	private String outputContent;
@@ -23,7 +26,6 @@ public class MySQLTestHarness {
 			Gson gson = new Gson();
 			config = gson.fromJson(f, MySQLConfiguration.class);
 			outputContent = "";
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -82,5 +84,24 @@ public class MySQLTestHarness {
         }
         return callTimes;
 
+    }
+
+    private void printResults(Map<Integer, Long> timePerCall) {
+        int time = 0;
+
+        for (Integer i : timePerCall.keySet()) {
+            time += timePerCall.get(i);
+            outputContent += timePerCall.get(i) + "\n";
+        }
+
+        outputContent += "Total Time: " + time;
+        try{
+            FileWriter fstream = new FileWriter(config.getOutputFilename());
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write(outputContent);
+            out.close();
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 }

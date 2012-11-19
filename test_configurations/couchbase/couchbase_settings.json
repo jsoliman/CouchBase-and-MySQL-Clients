@@ -5,8 +5,12 @@
     "viewName": "trending_over_time",
     "outputFilename": "test1.log",
     "documentName": "deploy",
-    "setGroup": true,
-    "setReduce": true,
+    "bucketName": "Mathzor",
+    "queryConfigurations": {
+        "setGroup": true,
+        "setReduce": true,
+        "groupLevel": 2
+    },
     "uris": [
         "http://10.160.139.71:8091/pools",
         "http://10.160.29.63:8091/pools",

@@ -20,6 +20,13 @@
       <pathelement path="${build.dir}"/>
     </path>
 
+    <path id="mysql-classpath">
+        <fileset dir="${lib.dir}/mysql">
+            <include name="*.jar"/>
+        </fileset>
+      <pathelement path="${build.dir}"/>
+    </path>
+
     <target name="clean">
         <delete dir="${build.dir}"/>
     </target>
@@ -37,7 +44,15 @@
         </javac>
     </target>
 
-    <target name="build-testHarness" depends="build-couchbase">
+    <target name="build-mysql" depends="build-common">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includes="com/cpe560/mysql/*.java" includeantruntime="false">
+            <classpath refid="common-classpath"/>
+            <classpath refid="mysql-classpath"/>
+        </javac>
+    </target>
+
+    <target name="build-testHarness" depends="build-couchbase, build-mysql">
         <javac srcdir="${src.dir}" destdir="${classes.dir}" includes="com/cpe560/run/*.java" includeantruntime="false"/>        
     </target>
 

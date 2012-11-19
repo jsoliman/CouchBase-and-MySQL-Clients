@@ -1,0 +1,16 @@
+{
+    "iterations": 5,
+    "readsPerSecond": 10,
+    "writesPerSecond": 0,
+    "outputFilename": "test1.log",
+    "documentName": "deploy",
+    "setGroup": true,
+    "setReduce": true,
+    "userName":  "perftest",
+    "password": "performance", 
+    "databaseName": "Test",
+    "serverName": "ip-10-160-139-71.us-west-1.compute.internal",
+    "port": "3306",
+    "readQuery": "Select * from example;",
+    "writeQuery": "Select * from example;"
+}
