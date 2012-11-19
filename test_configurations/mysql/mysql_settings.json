@@ -1,6 +1,6 @@
 {
-    "iterations": 5,
-    "readsPerSecond": 10,
+    "iterations": 1,
+    "readsPerSecond": 1,
     "writesPerSecond": 0,
     "outputFilename": "test1.log",
     "documentName": "deploy",
