@@ -15,7 +15,6 @@ public class MySQLConfiguration extends Configuration {
 	private String port = null;
 	private List<InsertEntry> insertEntries;
 	private String readQuery = null;
-	private String writeQuery = null;
     private String createTable = null;
     private String dropTable = null;
 
@@ -28,7 +27,6 @@ public class MySQLConfiguration extends Configuration {
 	public String getServerName() { return this.serverName;}
 	public String getPort() { return this.port;}
 	public String getReadQuery() { return this.readQuery;}
-	public String getWriteQuery() { return this.writeQuery;}
 
     public void setCreateTable(String createTable) { this.createTable = createTable; }
     public void setdropTable(String dropTable) { this.dropTable = dropTable; }
@@ -39,7 +37,6 @@ public class MySQLConfiguration extends Configuration {
 	public void setServerName(String serverName) { this.serverName = serverName;}
 	public void setPort(String port) { this.port = port;}
 	public void setReadQuery(String readQuery) { this.readQuery = readQuery;}
-	public void setWriteQuery(String writeQuery) { this.writeQuery = writeQuery;}
 
     public ConcurrentHashMap<String, Object> generateConcurrentHashMap() {
 
@@ -50,7 +47,6 @@ public class MySQLConfiguration extends Configuration {
         map.put("serverName", serverName);
         map.put("port", port);
         map.put("readQuery", readQuery);
-        map.put("writeQuery", writeQuery); 
         map.put("createTable", createTable);
         map.put("dropTable", dropTable); 
         return map;
@@ -72,4 +68,4 @@ public class MySQLConfiguration extends Configuration {
         public void setResponse(String response) { this.response = response; }
         public void setStudent(String student) { this.student = student; }
     }
-}}
+}

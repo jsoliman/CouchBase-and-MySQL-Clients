@@ -18,8 +18,7 @@
          student INT(3)
        );",
     "dropTable": "DROP TABLE game;",
-    "readQuery": ",
-    "writeQuery": "
+    "readQuery": "",
     "insertEntries": [
         {"key": "1",  "sessionID": "test1", "response": "A", "student": "1"},
         {"key": "2",  "sessionID": "test1", "response": "A", "student": "2"},

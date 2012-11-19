@@ -13,7 +13,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
-
 public class WriteRequestThread implements Runnable {
 	private Thread t;
     private Connection connection;
@@ -43,7 +42,12 @@ public class WriteRequestThread implements Runnable {
 	    Properties connectionProps = new Properties();
 	    connectionProps.put("user", this.cb_config_map.get("userName"));
 	    connectionProps.put("password", this.cb_config_map.get("password"));
-        Class.forName("com.mysql.jdbc.Driver");
+        try {
+           Class.forName("com.mysql.jdbc.Driver");
+        }
+        catch (ClassNotFoundException e) {
+           e.printStackTrace();
+        }
         conn = DriverManager.getConnection(
                    "jdbc:mysql://" +
                    (String) this.cb_config_map.get("serverName") +
@@ -53,13 +57,13 @@ public class WriteRequestThread implements Runnable {
 	    return conn;
 	}
 
-    public void createTable(Connection con) throws SQLException {
-        Statement stmt = con.createStatement();
+    public void createTable(Connection connection) throws SQLException {
+        Statement stmt = connection.createStatement();
         stmt.executeUpdate((String) this.cb_config_map.get("createTable")); 
     } 
 
-    public void dropTable(Connection con) throws SQLException {
-        Statement stmt = con.createStatement();
+    public void dropTable(Connection connection) throws SQLException {
+        Statement stmt = connection.createStatement();
         stmt.executeUpdate((String) this.cb_config_map.get("dropTable")); 
     } 
 
@@ -80,23 +84,20 @@ public class WriteRequestThread implements Runnable {
                 + "(sessionID, response, student) VALUES"
                 + "(?,?,?)";
 
-        PreparedStatement ps = this.connection.prepareStatement(insertTableSQL);
-
         try {
+            PreparedStatement ps = this.connection.prepareStatement(insertTableSQL);
             // Create table
             createTable(this.connection);
             startTime = System.currentTimeMillis();                     
 
             for (MySQLConfiguration.InsertEntry entry : insertEntries) {
-                Statement stmt = con.createStatement();
+                Statement stmt = this.connection.createStatement();
 
                 ps.setString(1, entry.getSessionID());
                 ps.setString(2, entry.getResponse());
                 ps.setInt(3, Integer.parseInt(entry.getStudent()));
                 ps.executeUpdate();
 
-                OperationFuture<Boolean> setOp = client.set(key.toString(), EXP_TIME, entry.getValue());
-                key++;
                 // May need to adjust how timings are done.                
             }
 
