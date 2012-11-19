@@ -2,15 +2,15 @@
     "iterations": 1,
     "readsPerSecond": 1,
     "writesPerSecond": 0,
-    "outputFilename": "test1.log",
+    "outputFilename": "trend_over_time_big.log",
     "documentName": "deploy",
     "setGroup": true,
     "setReduce": true,
     "userName":  "perftest",
     "password": "performance", 
-    "databaseName": "Test",
+    "databaseName": "MathzorXXXL",
     "serverName": "ip-10-160-139-71.us-west-1.compute.internal",
     "port": "3306",
-    "readQuery": "Select * from example;",
+    "readQuery": "Select * from quizzes GROUP BY qStudent, stamp;",
     "writeQuery": ""
 }
