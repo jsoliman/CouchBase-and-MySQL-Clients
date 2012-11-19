@@ -46,6 +46,7 @@ public class MySQLConfiguration extends Configuration {
         ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<String, Object>(super.generateConcurrentHashMap());
         map.put("userName", userName);
         map.put("password", password);
+        map.put("databaseName", databaseName);
         map.put("serverName", serverName);
         map.put("port", port);
         map.put("readQuery", readQuery);
@@ -71,4 +72,4 @@ public class MySQLConfiguration extends Configuration {
         public void setResponse(String response) { this.response = response; }
         public void setStudent(String student) { this.student = student; }
     }
-}
+}}
