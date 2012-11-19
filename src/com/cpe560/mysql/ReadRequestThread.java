@@ -39,11 +39,17 @@ public class ReadRequestThread implements Runnable {
 	    Properties connectionProps = new Properties();
 	    connectionProps.put("user", this.cb_config_map.get("userName"));
 	    connectionProps.put("password", this.cb_config_map.get("password"));
-        Class.forName("com.mysql.jdbc.Driver");
+        try {
+           Class.forName("com.mysql.jdbc.Driver");
+        }
+        catch (ClassNotFoundException e) {
+           e.printStackTrace();
+        }
         conn = DriverManager.getConnection(
                    "jdbc:mysql://" +
                    (String) this.cb_config_map.get("serverName") +
-                   ":" + (String) this.cb_config_map.get("port") + "/",
+                   ":" + (String) this.cb_config_map.get("port") + "/"
+                   + (String) this.cb_config_map.get("databaseName"),
                    connectionProps);
 	    System.out.println("Connected to database");
 	    return conn;
@@ -68,7 +74,7 @@ public class ReadRequestThread implements Runnable {
 
         try {
             startTime = System.currentTimeMillis();                     
-            this.preparedStatement.executeUpdate();
+            this.preparedStatement.executeQuery();
             endTime = System.currentTimeMillis();
             this.connection.close();
 
