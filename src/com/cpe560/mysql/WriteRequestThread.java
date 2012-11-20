@@ -51,7 +51,8 @@ public class WriteRequestThread implements Runnable {
         conn = DriverManager.getConnection(
                    "jdbc:mysql://" +
                    (String) this.cb_config_map.get("serverName") +
-                   ":" + (String) this.cb_config_map.get("port") + "/",
+                   ":" + (String) this.cb_config_map.get("port") + "/"
+                   + (String) this.cb_config_map.get("databaseName"),
                    connectionProps);
 	    System.out.println("Connected to database");
 	    return conn;
