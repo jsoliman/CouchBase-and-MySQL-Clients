@@ -74,6 +74,7 @@
             <classpath path="${classes.dir}" />
             <classpath refid="couchbase-classpath" />
             <classpath refid="common-classpath"/>
+            <classpath refid="mysql-classpath"/>
         </java>
     </target>
 </project>
