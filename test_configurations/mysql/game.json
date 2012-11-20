@@ -12,12 +12,13 @@
     "databaseName": "test",
     "serverName": "ip-10-160-139-71.us-west-1.compute.internal",
     "port": "3306",
-    "createTable": "CREATE TABLE game (
-         id INT(4) NOT NULL AUTO_INCREMENT,
-         sessionID VARCHAR(10),
-         response VARCHAR(1),
-         student INT(3)
-       );",
+    "createTable": "CREATE TABLE game (           
+        id INT(4) NOT NULL AUTO_INCREMENT,           
+        sessionID VARCHAR(10),           
+        response VARCHAR(1),           
+        student INT(3), 
+        PRIMARY KEY (id)         
+        );",
     "dropTable": "DROP TABLE game;",
     "readQuery": "",
     "insertEntries": [
