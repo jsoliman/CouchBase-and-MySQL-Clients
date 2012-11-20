@@ -60,13 +60,28 @@ public class MySQLTestHarness {
         int iterations = config.getIterations();
         int messagesPerSecond = readsPerSecond + writesPerSecond;
         ConcurrentHashMap<String, Object> config_map = config.generateConcurrentHashMap();
+        String workloadType = config.getWorkloadType();
 
         try {
             for (int rt = 0; rt < iterations; rt++) {
                 long start = System.currentTimeMillis();
-                for (int i = 0; i < readsPerSecond; i++) {
-                    new ReadRequestThread(countDownLatch, config_map, callTimes, (rt * messagesPerSecond) + i);
+                if (workloadType.equals("read")) {
+                    for (int i = 0; i < readsPerSecond; i++) {
+                        new ReadRequestThread(countDownLatch, config_map, callTimes, (rt * messagesPerSecond) + i);
+                    }
                 }
+                else if (workloadType.equals("write")) {
+                    for (int i = 0; i < readsPerSecond; i++) {
+                        new WriteRequestThread(countDownLatch, config_map, callTimes, (rt * messagesPerSecond) + i, config.getInsertEntries() );
+                    }
+                }
+                else {
+                    for (int i = 0; i < readsPerSecond; i++) {
+                        new ReadWriteRequestThread(countDownLatch, config_map, callTimes, (rt * messagesPerSecond) + i, config.getInsertEntries());
+                    }
+                }
+
+
                 for (int i = readsPerSecond; i < messagesPerSecond; i++) {
                     System.out.println("Implement write request thread");
                 }

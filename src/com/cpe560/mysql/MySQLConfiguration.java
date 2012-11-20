@@ -17,6 +17,8 @@ public class MySQLConfiguration extends Configuration {
 	private String readQuery = null;
     private String createTable = null;
     private String dropTable = null;
+    private String workloadType;
+
 
     public String getCreateTable() { return this.createTable; }
     public String getDropTable() { return this.dropTable; }
@@ -27,6 +29,7 @@ public class MySQLConfiguration extends Configuration {
 	public String getServerName() { return this.serverName;}
 	public String getPort() { return this.port;}
 	public String getReadQuery() { return this.readQuery;}
+    public String getWorkloadType() { return workloadType; }
 
     public void setCreateTable(String createTable) { this.createTable = createTable; }
     public void setdropTable(String dropTable) { this.dropTable = dropTable; }
@@ -37,6 +40,7 @@ public class MySQLConfiguration extends Configuration {
 	public void setServerName(String serverName) { this.serverName = serverName;}
 	public void setPort(String port) { this.port = port;}
 	public void setReadQuery(String readQuery) { this.readQuery = readQuery;}
+    public void setWorkloadType(String workload) { this.workloadType = workload; }
 
     public ConcurrentHashMap<String, Object> generateConcurrentHashMap() {
 

@@ -4,6 +4,7 @@
     "writesPerSecond": 0,
     "outputFilename": "trend_over_time_big.log",
     "documentName": "deploy",
+    "workloadType": "read",
     "setGroup": true,
     "setReduce": true,
     "userName":  "perftest",

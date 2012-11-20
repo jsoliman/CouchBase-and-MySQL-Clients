@@ -5,6 +5,7 @@
     "outputFilename": "trend_over_time.log",
     "documentName": "deploy",
     "setGroup": true,
+    "workloadType": "write",
     "setReduce": true,
     "userName":  "perftest",
     "password": "performance", 
