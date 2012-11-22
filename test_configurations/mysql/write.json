@@ -1,0 +1,19 @@
+{
+    "iterations": 100,
+    "readsPerSecond": 1,
+    "writesPerSecond": 0,
+    "outputFilename": "read.log",
+    "documentName": "deploy",
+    "setGroup": true,
+    "setReduce": true,
+    "userName":  "perftest",
+    "password": "performance", 
+    "databaseName": "test",
+    "serverName": "ip-10-160-139-71.us-west-1.compute.internal",
+    "port": "3306",
+    "readQuery": "Select COUNT(*) from game;",
+    "worloadType": "game_write",
+    "insertEntries": [
+        {"sessionID": "test1", "response": "A", "student": "1"},
+    ]
+}

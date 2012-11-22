@@ -13,7 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
-public class WriteRequestThread implements Runnable {
+public class WriteThread implements Runnable {
 	private Thread t;
     private Connection connection;
     private PreparedStatement preparedStatement;
@@ -24,10 +24,10 @@ public class WriteRequestThread implements Runnable {
     private int id;
 
 
-    public WriteRequestThread(CountDownLatch countDownLatch, ConcurrentHashMap<String, Object> cb_config_map, ConcurrentHashMap<Integer, Long> map, int id, 
+    public WriteThread(CountDownLatch countDownLatch, ConcurrentHashMap<String, Object> cb_config_map, ConcurrentHashMap<Integer, Long> map, int id, 
                                 List<MySQLConfiguration.InsertEntry> insertEntries) {
         this.countDownLatch = countDownLatch;
-        t = new Thread(this, "WriteRequestThread");
+        t = new Thread(this, "WriteThread");
 
         this.cb_config_map = cb_config_map;
         this.map = map;
@@ -36,45 +36,16 @@ public class WriteRequestThread implements Runnable {
         t.start();
     } 
 
-	public Connection generateConnection(String userName, String password) throws SQLException {
-
-	    Connection conn = null;
-	    Properties connectionProps = new Properties();
-	    connectionProps.put("user", this.cb_config_map.get("userName"));
-	    connectionProps.put("password", this.cb_config_map.get("password"));
-        try {
-           Class.forName("com.mysql.jdbc.Driver");
-        }
-        catch (ClassNotFoundException e) {
-           e.printStackTrace();
-        }
-        conn = DriverManager.getConnection(
-                   "jdbc:mysql://" +
-                   (String) this.cb_config_map.get("serverName") +
-                   ":" + (String) this.cb_config_map.get("port") + "/"
-                   + (String) this.cb_config_map.get("databaseName"),
-                   connectionProps);
-	    System.out.println("Connected to database");
-	    return conn;
-	}
-
-    public void createTable(Connection connection) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate((String) this.cb_config_map.get("createTable")); 
-    } 
-
-    public void dropTable(Connection connection) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate((String) this.cb_config_map.get("dropTable")); 
-    } 
-
     public void run() {
         long startTime = 0;
         long endTime = 0;
 
         try {
-            this.connection = generateConnection((String) this.cb_config_map.get("userName"),
-                                                (String) this.cb_config_map.get("password"));
+            this.connection = MySQLTestHarness.generateConnection((String) this.cb_config_map.get("userName"),
+                                                (String) this.cb_config_map.get("password"),
+                                                (String) this.cb_config_map.get("serverName"),
+                                                (String) this.cb_config_map.get("port"),
+                                                (String) this.cb_config_map.get("databaseName"));
         }
         catch (SQLException ex) {
             ex.printStackTrace();
@@ -88,11 +59,10 @@ public class WriteRequestThread implements Runnable {
         try {
             PreparedStatement ps = this.connection.prepareStatement(insertTableSQL);
             // Create table
-            createTable(this.connection);
+            //createTable(this.connection);
             startTime = System.currentTimeMillis();                     
 
 
-            int counter = 1;
             for (MySQLConfiguration.InsertEntry entry : insertEntries) {
                 Statement stmt = this.connection.createStatement();
 
@@ -102,17 +72,13 @@ public class WriteRequestThread implements Runnable {
                 ps.executeUpdate();
 
 
-                if (counter % 100 == 0) {
-                    //Done writing 100 
-                }
-                counter++;
                 // May need to adjust how timings are done.                
             }
 
             endTime = System.currentTimeMillis();
 
             //Drop table
-            dropTable(this.connection);
+            //dropTable(this.connection);
 
             this.connection.close();
 
@@ -120,7 +86,7 @@ public class WriteRequestThread implements Runnable {
 		catch (Exception ex) {
             ex.printStackTrace();
         }
-        map.put(id, endTime - startTime);
+        map.put(id, endTime);
         countDownLatch.countDown();
      }
 

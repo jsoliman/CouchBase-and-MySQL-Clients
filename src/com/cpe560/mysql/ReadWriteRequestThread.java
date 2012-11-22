@@ -85,13 +85,12 @@ public class ReadWriteRequestThread implements Runnable {
         }
 
         String insertTableSQL = "INSERT INTO game"
-                + "(sessionID, response, student) VALUES"
-                + "(?,?,?)";
-        String selectString = "SELECT * FROM game";
+                + "(id, sessionID, response, student) VALUES"
+                + "(?, ?,?,?)";
 
         try {
             PreparedStatement ps = this.connection.prepareStatement(insertTableSQL);
-            PreparedStatement sps = this.connection.prepareStatement(selectString);
+            PreparedStatement sps;
             // Create table
             createTable(this.connection);
             startTime = System.currentTimeMillis();                     
@@ -99,13 +98,14 @@ public class ReadWriteRequestThread implements Runnable {
             for (MySQLConfiguration.InsertEntry entry : insertEntries) {
                 Statement stmt = this.connection.createStatement();
 
-                ps.setString(1, entry.getSessionID());
-                ps.setString(2, entry.getResponse());
-                ps.setInt(3, Integer.parseInt(entry.getStudent()));
+                ps.setInt(1, Integer.parseInt(entry.getKey()));
+                ps.setString(2, entry.getSessionID());
+                ps.setString(3, entry.getResponse());
+                ps.setInt(4, Integer.parseInt(entry.getStudent()));
                 ps.executeUpdate();
 
-                this.preparedStatement = generatePreparedStatement(this.connection);
-
+                sps = generatePreparedStatement(this.connection);
+                this.preparedStatement.setInt(1, Integer.parseInt(entry.getKey()));
                 sps.executeQuery();
                 // May need to adjust how timings are done.                
             }

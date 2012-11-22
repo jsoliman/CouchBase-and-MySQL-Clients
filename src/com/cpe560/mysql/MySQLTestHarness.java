@@ -3,6 +3,10 @@ package com.cpe560.mysql;
 import com.cpe560.mysql.MySQLConfiguration;
 
 import com.google.gson.Gson;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
+import java.sql.Statement;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -19,6 +23,41 @@ public class MySQLTestHarness {
 		msth.init(filename);
 		return msth;
 	}
+
+    public static Connection generateConnection(String userName, String password, 
+                                                String serverName, String port, 
+                                                String databaseName) 
+                                                throws SQLException {
+
+        Connection conn = null;
+        Properties connectionProps = new Properties();
+        connectionProps.put("user", userName);
+        connectionProps.put("password", password);
+        try {
+           Class.forName("com.mysql.jdbc.Driver");
+        }
+        catch (ClassNotFoundException e) {
+           e.printStackTrace();
+        }
+        conn = DriverManager.getConnection(
+                   "jdbc:mysql://" + serverName
+                     +
+                   ":" + port + "/"
+                   + databaseName,
+                   connectionProps);
+        System.out.println("Connected to database");
+        return conn;
+    }
+
+    public static void createTable(Connection connection, String createTableStatement) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(createTableStatement); 
+    } 
+
+    public static void dropTable(Connection connection, String dropTableStatement) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(dropTableStatement); 
+    } 
 
 	private void init(String filename) {
 		try {
@@ -74,6 +113,12 @@ public class MySQLTestHarness {
                     for (int i = 0; i < readsPerSecond; i++) {
                         new WriteRequestThread(countDownLatch, config_map, callTimes, (rt * messagesPerSecond) + i, config.getInsertEntries() );
                     }
+                }
+                else if (workloadType.equals("game_read")) {
+                    new ReadThread(countDownLatch, config_map, callTimes, (rt * messagesPerSecond));
+                }
+                else if (workloadType.equals("game_write")) {
+                        new WriteThread(countDownLatch, config_map, callTimes, (rt * messagesPerSecond), config.getInsertEntries());
                 }
                 else {
                     for (int i = 0; i < readsPerSecond; i++) {
