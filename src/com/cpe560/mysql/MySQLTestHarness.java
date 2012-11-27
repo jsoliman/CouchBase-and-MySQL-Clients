@@ -13,6 +13,10 @@ import java.util.concurrent.CountDownLatch;
 import java.io.*;
 import java.util.*;
 
+/*
+ * Class representing test harness for MySQL.
+ *
+ */
 public class MySQLTestHarness {
 	private String outputContent;
 	private MySQLConfiguration config;
@@ -59,6 +63,7 @@ public class MySQLTestHarness {
         stmt.executeUpdate(dropTableStatement); 
     } 
 
+    /** Reads from configuration file and creates test. */
 	private void init(String filename) {
 		try {
 			FileReader f = new FileReader(filename);
@@ -75,6 +80,7 @@ public class MySQLTestHarness {
         outputContent += "Number of Iterations: " + config.getIterations() + "\n";
 	} 
 
+    /** Runs the actual tests. */
 	public void run() {
         int iterations = config.getIterations();
         int messagesPerSecond = config.getReadsPerSecond() + config.getWritesPerSecond();
@@ -92,6 +98,7 @@ public class MySQLTestHarness {
         printResults(callTimes);
 	}
 
+    /** Starts the threads. */
     private Map<Integer, Long> dispatchEvents(CountDownLatch countDownLatch) {
         ConcurrentHashMap<Integer, Long> callTimes = new ConcurrentHashMap<Integer, Long>();
         int readsPerSecond = config.getReadsPerSecond();

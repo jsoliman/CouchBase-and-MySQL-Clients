@@ -12,7 +12,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
-
+/**
+ * Class representing a Read Test. 
+ *
+ */
 public class ReadRequestThread implements Runnable {
 	private Thread t;
     private Connection connection;

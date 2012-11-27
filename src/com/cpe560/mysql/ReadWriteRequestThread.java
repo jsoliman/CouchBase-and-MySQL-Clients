@@ -13,6 +13,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Thread for testing mixed datasets. 
+ * Tests reads and writes. 
+ *
+ */
 public class ReadWriteRequestThread implements Runnable {
 	private Thread t;
     private Connection connection;

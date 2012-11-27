@@ -13,6 +13,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Thread for writing and reading to a database. 
+ * Used in the mixed test. 
+ *
+ */
 public class WriteRequestThread implements Runnable {
 	private Thread t;
     private Connection connection;

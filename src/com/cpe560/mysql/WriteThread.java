@@ -13,6 +13,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Thread for writing to a database. 
+ * Used in the mixed test. 
+ *
+ */
 public class WriteThread implements Runnable {
 	private Thread t;
     private Connection connection;
@@ -76,9 +81,6 @@ public class WriteThread implements Runnable {
             }
 
             endTime = System.currentTimeMillis();
-
-            //Drop table
-            //dropTable(this.connection);
 
             this.connection.close();
 

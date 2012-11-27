@@ -7,15 +7,25 @@ import com.cpe560.common.Configuration;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Class representing configuration for MySQL.
+ *
+ * Contains values for configuring tests. 
+ *
+ **/
 public class MySQLConfiguration extends Configuration {
 	private String userName = null;
 	private String password = null;
 	private String databaseName = null;
+    /* Server url*/
 	private String serverName = null;
 	private String port = null;
 	private List<InsertEntry> insertEntries;
+    /* Query to run during read tests. */
 	private String readQuery = null;
+    /* SQL command to create a table in a write test. */
     private String createTable = null;
+    /* SQL command to drop a table in a write test. */
     private String dropTable = null;
     private String workloadType;
 
@@ -56,6 +66,7 @@ public class MySQLConfiguration extends Configuration {
         return map;
     }
 
+    /* Class that represents an entry to insert for the insert test. */
     public static class InsertEntry {
         private String key;
         private String sessionID;
